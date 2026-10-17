@@ -1,0 +1,25 @@
+Vagrant.configure("2") do |config|
+
+  config.vm.box = "bento/ubuntu-24.04"
+
+  nodes = {
+    "lb-01"  => { ip: "192.168.56.10", ram: 512,  cpus: 1 },
+    "lb-02"  => { ip: "192.168.56.11", ram: 512,  cpus: 1 },
+    "web-01" => { ip: "192.168.56.20", ram: 1024, cpus: 1 },
+    "web-02" => { ip: "192.168.56.21", ram: 1024, cpus: 1 },
+  }
+
+  nodes.each do |name, c|
+    config.vm.define name do |node|
+      node.vm.hostname = name
+      node.vm.network "private_network", ip: c[:ip]
+
+      node.vm.provider "virtualbox" do |vb|
+        vb.name   = name
+        vb.memory = c[:ram]
+        vb.cpus   = c[:cpus]
+      end
+    end
+  end
+
+end
